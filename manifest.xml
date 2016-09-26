@@ -8,4 +8,6 @@
   <logo>http://</logo>
   <depend package="base/cmake" />
   <depend package="base/types" />
+
+  <tags>stable</tags>
 </package>

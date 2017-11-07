@@ -43,6 +43,29 @@ void Filters::filterOutliers(base::samples::DepthMap& laser_scan, double max_dev
     }
 }
 
+void Filters::filterRegion(base::samples::DepthMap &laser_scan, const base::AngleSegment& horizontal_segment, float distance)
+{
+    if(laser_scan.horizontal_size == 0 || laser_scan.vertical_size == 0)
+        return;
+    if(laser_scan.horizontal_size != laser_scan.horizontal_interval.size())
+        throw std::runtime_error("Filter region is currently only implemented for the case horizontal_size == |horizontal_interval|!");
+    if(laser_scan.horizontal_projection != base::samples::DepthMap::POLAR)
+        throw std::runtime_error("Filter region is currently only implemented for the polar projection!");
+
+    base::samples::DepthMap::DepthMatrixMap distances = laser_scan.getDistanceMatrixMap();
+    for(unsigned c = 0; c < laser_scan.horizontal_size; c++)
+    {
+        if(horizontal_segment.isInside(base::Angle::fromRad(laser_scan.horizontal_interval[c])))
+        {
+            for(unsigned r = 0; r < laser_scan.vertical_size; r++)
+            {
+                if(distances(r,c) < distance)
+                    distances(r,c) = base::NaN<float>();
+            }
+        }
+    }
+}
+
 unsigned Filters::checkPoints(const Eigen::Vector3f& origin, const Eigen::Vector3f& neighbor, double max_angle)
 {
     if(!origin.allFinite() || !neighbor.allFinite())

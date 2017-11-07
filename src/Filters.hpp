@@ -28,6 +28,12 @@ public:
     */
     static void filterOutliers(base::samples::DepthMap &laser_scan, double max_deviation_angle, unsigned min_neighbors = 1);
 
+    /**
+     * This method removes an region from the scan given a max distance.
+     * Both angular intervals and the distance describe the volume that will be removed from the scan.
+     */
+    static void filterRegion(base::samples::DepthMap &laser_scan, const base::AngleSegment& horizontal_segment, float distance);
+
 protected:
 
     /**

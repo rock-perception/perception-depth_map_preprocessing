@@ -45,6 +45,10 @@ void Filters::filterOutliers(base::samples::DepthMap& laser_scan, double max_dev
 
 void Filters::filterRegion(base::samples::DepthMap &laser_scan, const base::AngleSegment& horizontal_segment, float distance)
 {
+    // check parameter sanity
+    if(distance == 0. || horizontal_segment.width == 0. || base::isNaN(horizontal_segment.startRad) || base::isNaN(horizontal_segment.endRad))
+        return;
+    // check input sanity
     if(laser_scan.horizontal_size == 0 || laser_scan.vertical_size == 0)
         return;
     if(laser_scan.horizontal_size != laser_scan.horizontal_interval.size())
